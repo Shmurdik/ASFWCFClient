@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASFRedeemer.Properties
+namespace ASFWCFClient.Properties
 {
 
 

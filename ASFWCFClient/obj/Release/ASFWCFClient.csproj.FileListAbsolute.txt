@@ -1,0 +1,15 @@
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\ASFWCFClient.exe.config
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\ASFWCFClient.exe
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\ASFWCFClient.pdb
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.csprojResolveAssemblyReference.cache
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.Form1.resources
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.Properties.Resources.resources
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.csproj.GenerateResource.Cache
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.exe
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.pdb
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\Newtonsoft.Json.dll
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\Newtonsoft.Json.xml
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\ASFWCFClient.exe.manifest
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\bin\Release\ASFWCFClient.application
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.exe.manifest
+D:\X-Utilities\ASFWCFClient\ASFWCFClient\obj\Release\ASFWCFClient.application

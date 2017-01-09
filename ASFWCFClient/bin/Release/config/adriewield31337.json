@@ -1,0 +1,27 @@
+{
+  "Enabled": true,
+  "StartOnLaunch": true,
+  "SteamLogin": "adriewield31337",
+  "SteamPassword": "k6acysTKJJvzn4PF",
+  "SteamParentalPIN": "0",
+  "SteamApiKey": "60D4B20F9D2BBE76E91BD2A07B4686F3",
+  "SteamMasterID": 76561198261864399,
+  "SteamMasterClanID": 103582791441109728,
+  "CardDropsRestricted": false,
+  "DismissInventoryNotifications": true,
+  "FarmOffline": false,
+  "HandleOfflineMessages": false,
+  "AcceptGifts": true,
+  "ForwardKeysToOtherBots": true,
+  "DistributeKeys": true,
+  "UseAsfAsMobileAuthenticator": false,
+  "ShutdownOnFarmingFinished": false,
+  "SendOnFarmingFinished": false,
+  "SteamTradeToken": null,
+  "SendTradePeriod": 0,
+  "AcceptConfirmationsPeriod": 0,
+  "CustomGamePlayedWhileIdle": null,
+  "GamesPlayedWhileIdle": [
+    0
+  ]
+}

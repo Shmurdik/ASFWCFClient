@@ -1,0 +1,27 @@
+{
+  "Enabled": true,
+  "StartOnLaunch": true,
+  "SteamLogin": "gravelwarden",
+  "SteamPassword": "mNPu6V2U4ebbwufq",
+  "SteamParentalPIN": "0",
+  "SteamApiKey": "702E9A9EFFF7C6C7F79A14C49A82B993",
+  "SteamMasterID": 76561198293508301,
+  "SteamMasterClanID": 103582791441109728,
+  "CardDropsRestricted": false,
+  "DismissInventoryNotifications": true,
+  "FarmOffline": false,
+  "HandleOfflineMessages": false,
+  "AcceptGifts": true,
+  "ForwardKeysToOtherBots": true,
+  "DistributeKeys": true,
+  "UseAsfAsMobileAuthenticator": false,
+  "ShutdownOnFarmingFinished": false,
+  "SendOnFarmingFinished": false,
+  "SteamTradeToken": null,
+  "SendTradePeriod": 0,
+  "AcceptConfirmationsPeriod": 0,
+  "CustomGamePlayedWhileIdle": null,
+  "GamesPlayedWhileIdle": [
+    0
+  ]
+}
