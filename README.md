@@ -10,8 +10,6 @@
 
 ***
 
-This crumb helps to fast redeem a tons of keys.
-
 ## How to use
 
 **ASF should be run as server!** I.e. like "ASF.exe --server".
