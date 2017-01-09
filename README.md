@@ -16,7 +16,8 @@
 
 Copy ASFWCFClient.exe to ASF directory.
 
-If you launch ASFWCFClient outside the ASF directory, WCF data will be set by default i.e. host=localhost and port=1242.
+If you launch ASFWCFClient outside the ASF directory, WCF data will be set by default i.e. host=127.0.0.1 and port=1242.
 
 ### Commands
 
+Commands with `<BOT>` apply only to selected bots. Commands without `<BOT>` ignores list of bots. Some commands require other arguments, put them in field below. If the command does not require any arguments, leave the appropriate field empty.
