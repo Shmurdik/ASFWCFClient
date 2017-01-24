@@ -73,6 +73,11 @@ namespace ASFWCFClient
             "version"
         };
 
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal readonly int Delay = 3;
+
+        private static string cfgfilePath = "";
+
         public Config() { }
 
         internal static Config Load(string filePath)
@@ -92,6 +97,7 @@ namespace ASFWCFClient
             try
             {
                 config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(filePath));
+                cfgfilePath = filePath;
             }
             catch (Exception e)
             {
@@ -105,6 +111,11 @@ namespace ASFWCFClient
             }
 
             return config;
+        }
+
+        internal void Save()
+        {
+            File.WriteAllText(cfgfilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
     }
 }

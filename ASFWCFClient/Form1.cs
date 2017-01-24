@@ -35,7 +35,8 @@ namespace ASFWCFClient
         private static readonly string ExecutableFile = Assembly.Location;
         private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 
-        private Client Client;
+        private Client client;
+        private Config config = new Config();
 
         private string WCFHost = "127.0.0.1";
         private string WCFPort = "1242";
@@ -43,6 +44,39 @@ namespace ASFWCFClient
         public Form1()
         {
             InitializeComponent();
+        }
+
+        internal string SendCommand(string input)
+        {
+            if (client == null)
+            {
+                client = new Client(
+                    new NetTcpBinding
+                    //new BasicHttpBinding
+                    {
+                        // We use SecurityMode.None for Mono compatibility
+                        // Yes, also on Windows, for Mono<->Windows communication
+                        Security = { Mode = SecurityMode.None },
+                        //Security = { Mode = BasicHttpSecurityMode.None },
+                        SendTimeout = new TimeSpan(1, 0, 0)
+                    },
+                    new EndpointAddress("net.tcp://" + WCFHost + ":" + WCFPort + "/ASF")
+                //new EndpointAddress("http://" + WCFHost + ":" + WCFPort + "/ASF")
+                );
+            }
+
+            string result = client.HandleCommand(input);
+
+            StopClient();
+
+            return result;
+        }
+
+        private void StopClient()
+        {
+            if (client == null) { return; }
+            if (client.State != CommunicationState.Closed) { client.Close(); }
+            client = null;
         }
 
         private void ResponseExecute()
@@ -67,35 +101,19 @@ namespace ASFWCFClient
                 input += " " + textBox_args.Text;
             }
 
-            if (Client == null)
-            {
-                Client = new Client(
-                    new NetTcpBinding
-                    //new BasicHttpBinding
-                    {
-                        // We use SecurityMode.None for Mono compatibility
-                        // Yes, also on Windows, for Mono<->Windows communication
-                        Security = { Mode = SecurityMode.None },
-                        //Security = { Mode = BasicHttpSecurityMode.None },
-                        SendTimeout = new TimeSpan(1, 0, 0)
-                    },
-                    new EndpointAddress("net.tcp://" + WCFHost + ":" + WCFPort + "/ASF")
-                //new EndpointAddress("http://" + WCFHost + ":" + WCFPort + "/ASF")
-                );
-            }
-
             if (selectedBots.Length > 0 && input.Contains("<BOT>"))
             {
                 foreach (string botName in selectedBots)
                 {
-                    string res = Client.HandleCommand(input.Replace("<BOT>", botName));
-                    richTextBox_result.Text += ((res.Contains(botName)) ? "" : "<" + botName + "> ") + res + (res.EndsWith("\n") ? "" : "\r\n");
+                    string res = SendCommand(input.Replace("<BOT>", botName)).Trim();
+                    richTextBox_result.Text += ((res.Contains(botName)) ? "" : "<" + botName + "> ") + res.Trim() + "\r\n";
                     //richTextBox_result.Text += input.Replace("<BOT>", botName);
+                    if(numericUpDown_delay.Value > 0) { Thread.Sleep((int)numericUpDown_delay.Value * 1000); }
                 }
             }
             else
             {
-                richTextBox_result.Text = Client.HandleCommand(input);
+                richTextBox_result.Text = SendCommand(input).Trim();
                 //richTextBox_result.Text = input;
             }
 
@@ -106,6 +124,10 @@ namespace ASFWCFClient
 
         private async void button_execute_Click(object sender, EventArgs e)
         {
+            richTextBox_result.ForeColor = Color.LimeGreen;
+
+            config.Save();
+
             await Task.Run(new Action(ResponseExecute));
         }
 
@@ -139,16 +161,15 @@ namespace ASFWCFClient
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in listView_botname.Items)
-            {
-                item.Selected = false;
-            }
+            listView_botname.SelectedIndices.Clear();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            richTextBox_result.Font = new Font(FontFamily.GenericMonospace, richTextBox_result.Font.Size, richTextBox_result.Font.Style);
+
             string cfg_file = Path.Combine(ExecutableDirectory, Path.GetFileNameWithoutExtension(ExecutableFile) + ".json");
-            Config config = new Config();
+            
             if (!File.Exists(cfg_file)) { File.WriteAllText(cfg_file, JsonConvert.SerializeObject(config, Formatting.Indented)); }
             config = Config.Load(cfg_file);
 
@@ -176,6 +197,10 @@ namespace ASFWCFClient
             }
 
             File.WriteAllText(Path.GetFileNameWithoutExtension(ExecutableFile) + ".log", "********** " + DateTime.Now + " **********\r\n");
+
+            string checkASF = SendCommand("version");
+            if(string.IsNullOrEmpty(checkASF) || checkASF.Contains("HandleCommand return error:")) { richTextBox_result.ForeColor = Color.Red; richTextBox_result.Text = "********** ASF Server ERROR! **********\r\nWCFHost: " + WCFHost + "\r\nWCFPort: " + WCFPort + "\r\n\r\nError message:\r\n\r\n" + checkASF; }
+            else { richTextBox_result.Text = "********** ASF Server OK: " + checkASF + " **********"; }
         }
 
         private void textBox_search_in_res_Enter(object sender, EventArgs e)
@@ -196,6 +221,64 @@ namespace ASFWCFClient
                 textBox_search_in_res.ForeColor = Color.Gray;
                 textBox_search_in_res.Font = new Font(textBox_search_in_res.Font, FontStyle.Italic);
             }
+        }
+
+        private void textBox_search_in_res_KeyUp(object sender, KeyEventArgs e)
+        {
+            richTextBox_result.SelectAll();
+            richTextBox_result.SelectionColor = richTextBox_result.ForeColor;
+            richTextBox_result.SelectionBackColor = richTextBox_result.BackColor;
+            int startIndex = richTextBox_result.Find(textBox_search_in_res.Text, 0, RichTextBoxFinds.None);
+            if (startIndex >= 0 && richTextBox_result.Text.IndexOf(textBox_search_in_res.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                richTextBox_result.Select(startIndex, textBox_search_in_res.Text.Length);
+
+                richTextBox_result.SelectionColor = Color.White;
+                richTextBox_result.SelectionBackColor = Color.Blue;
+
+                richTextBox_result.ScrollToCaret();
+                richTextBox_result.Refresh();
+                //richTextBox_result.Focus();
+            }
+        }
+
+        private void listView_botname_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (listView_botname.SelectedItems.Count > 0)
+            {
+                button_execute.Text = "Execute\r\n(" + listView_botname.SelectedItems.Count + ")";
+            }
+            else
+            {
+                button_execute.Text = "Execute";
+            }
+        }
+
+        private void textBox_search_botname_Enter(object sender, EventArgs e)
+        {
+            if (textBox_search_botname.Text == "Botname...")
+            {
+                textBox_search_botname.Text = "";
+                textBox_search_botname.ForeColor = SystemColors.WindowText;
+                textBox_search_botname.Font = new Font(textBox_search_botname.Font, FontStyle.Regular);
+            }
+        }
+
+        private void textBox_search_botname_Leave(object sender, EventArgs e)
+        {
+            if (textBox_search_botname.Text == "")
+            {
+                textBox_search_botname.Text = "Botname...";
+                textBox_search_botname.ForeColor = Color.Gray;
+                textBox_search_botname.Font = new Font(textBox_search_botname.Font, FontStyle.Italic);
+            }
+        }
+
+        private void textBox_search_botname_KeyUp(object sender, KeyEventArgs e)
+        {
+            listView_botname.SelectedIndices.Clear();
+            ListViewItem fitem = listView_botname.FindItemWithText(textBox_search_botname.Text);
+            if(fitem != null) { fitem.Selected = true; fitem.EnsureVisible(); }
         }
     }
 
